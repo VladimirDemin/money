@@ -11,13 +11,10 @@ double* Money::calc_pence(double amount)
 double* Money::calc_shilling(double amount) 
 {
 	double remainder = int(amount) % 20;
-	double i_remainder = ((int(amount * 10)) % 10);
-	remainder += i_remainder /= 10;
 	double pound_part = (amount - remainder) / 20;
 	double array[2] = { pound_part, remainder };
 	return array;
 }
-
 Money Money::operator + (Money& other)
 {
 	this->pound, other.pound, this->shilling, other.shilling, this->pence, other.pence;
@@ -33,24 +30,20 @@ Money Money::operator + (Money& other)
 Money Money::operator - (Money& other) 
 {
 	double amount_pence = this->pence - other.pence;
+	double amount_shilling = this->shilling - other.shilling;
 	other.shilling = calc_pence(amount_pence)[0] + other.shilling;
 	other.pence = calc_pence(amount_pence)[1];
-	double amount_shilling = this->shilling - other.shilling;
 	other.shilling = calc_shilling(amount_shilling)[1];
 	other.pound = this->pound - other.pound - calc_shilling(amount_shilling)[0];
-	if (other.pound < 0)
-	{
-		other.pound = (-this->pound + other.pound + calc_shilling(amount_shilling)[0])*-1;
-	}
 	if (amount_pence < 0)
 	{
-		other.shilling = calc_shilling(amount_shilling)[1]-1;
-		other.pence = calc_pence(amount_pence)[1]+12;
+		other.shilling = other.shilling-1;
+		other.pence =  other.pence+12;
 	}
-	if (amount_shilling < 0)
+	if (other.shilling < 0)
 	{
-		other.pound = this->pound - other.pound - calc_shilling(amount_shilling)[0] -1;
-		other.shilling = calc_shilling(amount_shilling)[1]+20;
+		other.pound = other.pound - 1;
+		other.shilling = other.shilling+20;
 	}
 	return other;
 }
